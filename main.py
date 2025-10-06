@@ -5,7 +5,7 @@ from telegram import Update, InputMediaPhoto
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 
 # توکن بات از متغیر محیطی (برای رندر و گیت هاب امن)
-TELEGRAM_TOKEN = os.environ.get(8235825259:AAHSq8W11LBZbw-p84WJqcONrU72ciufk6U)
+TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
 
 def start(update: Update, context: CallbackContext):
     update.message.reply_text(
