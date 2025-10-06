@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 from telegram import Update, InputMediaPhoto
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 
-# توکن بات از متغیر محیطی (برای رندر و گیت هاب امن)
+# توکن بات از متغیر محیطی
 TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
 
 def start(update: Update, context: CallbackContext):
@@ -14,15 +14,11 @@ def start(update: Update, context: CallbackContext):
     )
 
 def pinterest_search(query, max_results=5):
-    """
-    جستجوی پینترست و گرفتن چند عکس اول
-    """
     url = f"https://www.pinterest.com/search/pins/?q={query.replace(' ', '%20')}"
     headers = {"User-Agent": "Mozilla/5.0"}
-    response = requests.get(url, headers=headers)
+    response = requests.get(url, headers=headers, timeout=10)
     soup = BeautifulSoup(response.text, "html.parser")
     
-    # گرفتن چند تصویر
     img_tags = soup.find_all("img", limit=max_results)
     img_urls = [img["src"] for img in img_tags if img.get("src")]
     return img_urls
@@ -31,7 +27,7 @@ def handle_message(update: Update, context: CallbackContext):
     text = update.message.text
     if text.startswith("@Pinterest "):
         query = text[len("@Pinterest "):]
-        image_urls = pinterest_search(query, max_results=5)  # تعداد عکس‌ها رو اینجا تنظیم کن
+        image_urls = pinterest_search(query, max_results=5)
         if image_urls:
             media = [InputMediaPhoto(url) for url in image_urls]
             update.message.reply_media_group(media)
@@ -53,5 +49,5 @@ def main():
     updater.start_polling()
     updater.idle()
 
-if __name__ == "__main__":
+if name == "main":
     main()
